@@ -1,0 +1,31 @@
+---
+BasedOnStyle: Chromium
+AccessModifierOffset: 0
+AlignAfterOpenBracket: BlockIndent
+AlignArrayOfStructures: Right
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: true
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossComments: true
+  AlignCompound: true
+  PadOperators: true
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossComments: true
+  AlignCompound: true
+  PadOperators: true
+AllowAllParametersOfDeclarationOnNextLine: true
+BinPackArguments: false
+BreakConstructorInitializers: BeforeComma
+PackConstructorInitializers: Never
+BreakInheritanceList: BeforeComma
+ColumnLimit: 100
+IndentWidth: 4
+InsertBraces: true
+MaxEmptyLinesToKeep: 2
+PackConstructorInitializers: CurrentLine
+SeparateDefinitionBlocks: Always
+SpaceBeforeCpp11BracedList: true
