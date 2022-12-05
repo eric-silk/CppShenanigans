@@ -62,10 +62,45 @@ static inline void test_endianness_conversion(const T& value) {
     std::cout << typeid(T).name() << ((value == value_back) ? ": Yes" : ": No") << ::std::endl;
 }
 
+template <class T, size_t n>
+static inline std::array<std::byte, n> to_bytes(const T& input) {
+    constexpr size_t size = sizeof(input);
+    static_assert(n == size);
+
+    std::array<std::byte, n> output;
+    T                        input_tmp = input;
+    auto                     tmp       = reinterpret_cast<std::byte*>(&input_tmp);
+    std::copy(tmp, tmp + size, output.begin());
+
+    return output;
+}
+
+template <class T, size_t n>
+static inline T from_bytes(const std::array<std::byte, n>& input) {
+    constexpr size_t size = sizeof(T);
+    static_assert(n == size);
+
+    std::array<std::byte, n> tmp;
+    std::copy(input.begin(), input.end(), tmp.begin());
+    std::byte* tmp_data   = tmp.data();
+    T*         output_ptr = reinterpret_cast<T*>(tmp_data);
+    T          output     = *output_ptr;
+
+    return output;
+}
+
 template <class T>
 static inline void test_endianness_conversion_stl(const T& value) {
     const T value_swapped = hton_any_stl(value);
     const T value_back    = ntoh_any_stl(value_swapped);
+
+    std::cout << typeid(T).name() << ((value == value_back) ? ": Yes" : ": No") << ::std::endl;
+}
+
+template <class T>
+static inline void test_array_conversion(const T& value) {
+    const auto value_bytes = to_bytes<T, sizeof(T)>(value);
+    const T    value_back  = from_bytes<T, sizeof(T)>(value_bytes);
 
     std::cout << typeid(T).name() << ((value == value_back) ? ": Yes" : ": No") << ::std::endl;
 }
@@ -94,6 +129,18 @@ int main(void) {
 
     test_endianness_conversion_stl<double>(5345235235.62834562);
     test_endianness_conversion_stl<double>(-5345235235.62834562);
+
+    std::cout << "Array conversion:" << std::endl;
+    test_array_conversion<uint8_t>(5);
+    test_array_conversion<uint8_t>(253);
+
+    test_array_conversion<int>(2523);
+
+    test_array_conversion<float>(632642.54534);
+    test_array_conversion<float>(-632642.54534);
+
+    test_array_conversion<double>(5345235235.62834562);
+    test_array_conversion<double>(-5345235235.62834562);
 
     return 0;
 }
